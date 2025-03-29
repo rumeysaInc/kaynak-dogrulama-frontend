@@ -1,35 +1,61 @@
-// src/components/Layout.js
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Menubar } from "primereact/menubar";
-import { Button } from "primereact/button";
-import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-const Layout = () => {
-    const items = [
-        { label: "Ana Sayfa", icon: "pi pi-home", url: "/" },
-        { label: "Hakkımızda", icon: "pi pi-info-circle", url: "/about" },
-        { label: "İletişim", icon: "pi pi-envelope", url: "/contact" },
+const Layout = ({ children }) => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setUsername(decoded.sub);
+            } catch (e) {
+                console.error("Token çözümlenemedi:", e);
+            }
+        }
+    }, [token]);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/login");
+    };
+
+    // SOL taraftaki ana menü
+    const leftItems = [
+        { label: "Ana Sayfa", icon: "pi pi-home", command: () => navigate("/home") },
+        { label: "Kaynak Doğrula", icon: "pi pi-search", command: () => navigate("/verifySource") },
+        { label: "Kaynak Gönder", icon: "pi pi-send", command: () => navigate("/submitSource") },
     ];
 
-    const rightMenu = (
-        <div className="flex align-items-center gap-3">
-            <Link to="/login">
-                <Button label="Giriş Yap" icon="pi pi-sign-in" className="p-button-text" />
-            </Link>
-            <Link to="/register">
-                <Button label="Kayıt Ol" icon="pi pi-user-plus" className="p-button-outlined" />
-            </Link>
-        </div>
-    );
+    // SAĞ taraftaki kullanıcı işlemleri
+    const rightItems = token
+        ? [
+            {
+                label: username,
+                icon: "pi pi-user",
+                items: [
+                    { label: "Profilim", icon: "pi pi-id-card", command: () => navigate("/profile") },
+                    { separator: true },
+                    { label: "Çıkış Yap", icon: "pi pi-sign-out", command: handleLogout },
+                ],
+            },
+        ]
+        : [
+            { label: "Giriş Yap", icon: "pi pi-sign-in", command: () => navigate("/login") },
+            { label: "Kayıt Ol", icon: "pi pi-user-plus", command: () => navigate("/register") },
+        ];
 
     return (
-        <>
-            <Menubar model={items} end={rightMenu} className="custom-menubar" />
-            <div className="p-4">
-                <Outlet /> {/* Tüm sayfa içerikleri buraya yerleşir */}
-            </div>
-        </>
+        <div>
+            <Menubar model={leftItems} end={<Menubar model={rightItems} />} />
+            <main className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-tr from-indigo-100 via-white to-indigo-200">
+                <div className="w-full max-w-screen-xl px-4">{children}</div>
+            </main>
+        </div>
     );
 };
 

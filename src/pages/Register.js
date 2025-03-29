@@ -1,3 +1,4 @@
+import api from "../api/api";
 import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
@@ -25,18 +26,28 @@ const Register = () => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitted(true);
 
         if (user.username && user.email && user.password && user.confirmPassword) {
             if (user.password === user.confirmPassword) {
-                console.log("User registered:", user);
+                try {
+                    await api.post("/auth/register", {
+                        username: user.username,
+                        email: user.email,
+                        password: user.password,
+                    });
+                    alert("Kayıt başarılı, giriş yapabilirsiniz.");
+                } catch (error) {
+                    console.error("Kayıt başarısız", error.response?.data || error.message);
+                }
             } else {
                 alert("Şifreler uyuşmuyor!");
             }
         }
     };
+
 
     return (
         <div className="flex justify-content-center align-items-center min-h-screen" style={{ backgroundColor: "#1e1e2f" }}>

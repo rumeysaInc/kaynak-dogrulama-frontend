@@ -1,3 +1,4 @@
+import api from "../api/api";
 import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
@@ -5,7 +6,7 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 import { classNames } from "primereact/utils";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -15,18 +16,25 @@ import "primeflex/primeflex.css";
 const Login = () => {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
     const [submitted, setSubmitted] = useState(false);
+    const navigate = useNavigate();
 
-    const handleInputChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitted(true);
 
         if (credentials.username && credentials.password) {
-            console.log("Login successful:", credentials);
+            try {
+                const response = await api.post("/auth/login", credentials);
+                localStorage.setItem("token", response.data.token);
+                navigate("/home"); // giriş başarılıysa yönlendirme
+            } catch (error) {
+                console.error("Giriş başarısız", error.response?.data || error.message);
+            }
         }
+    };
+
+    const handleInputChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
     return (
