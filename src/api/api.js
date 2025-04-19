@@ -18,12 +18,19 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => response,
     error => {
+        console.log("İstek hatası:", error.response?.status, error.response?.data);
+
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token");
-            window.location.href = "/login"; // otomatik logout ve yönlendirme
+            console.log("401 Hatası - Token geçersiz ya da süresi dolmuş olabilir");
+
+            // localStorage.removeItem("token");
+            // window.location.href = "/login";
         }
         return Promise.reject(error);
     }
 );
+
+
+
 
 export default api;

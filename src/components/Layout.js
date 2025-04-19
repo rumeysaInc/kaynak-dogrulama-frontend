@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
     const leftItems = [
         { label: "Ana Sayfa", icon: "pi pi-home", command: () => navigate("/home") },
         { label: "Kaynak Doğrula", icon: "pi pi-search", command: () => navigate("/verifySource") },
-        { label: "Kaynak Gönder", icon: "pi pi-send", command: () => navigate("/submitSource") },
+        { label: "Kaynak Bul", icon: "pi pi-send", command: () => navigate("/submitSource") },
     ];
 
     // SAĞ taraftaki kullanıcı işlemleri

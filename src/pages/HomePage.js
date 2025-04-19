@@ -38,7 +38,7 @@ const HomePage = () => {
     ];
 
     return (
-        <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-tr from-indigo-100 via-white to-blue-100 flex flex-col items-center justify-center px-4 py-10">
+        <div className="min-h-[calc(100vh-64px)] w-full px-4 py-6 bg-gradient-to-tr from-indigo-100 via-white to-blue-100 flex flex-col items-center justify-center">
             <div className="bg-white shadow-2xl rounded-xl p-8 max-w-4xl w-full text-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">
                     Hoş geldin, <span className="text-indigo-600">{username}</span> 👋

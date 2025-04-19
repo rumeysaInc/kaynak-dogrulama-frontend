@@ -25,7 +25,9 @@ const Login = () => {
         if (credentials.username && credentials.password) {
             try {
                 const response = await api.post("/auth/login", credentials);
+                console.log("Gelen token: ", response.data); // 🔍 burada ne dönüyor?
                 localStorage.setItem("token", response.data.token);
+                console.log("Token localStorage'a yazıldı:", localStorage.getItem("token"));
                 navigate("/home"); // giriş başarılıysa yönlendirme
             } catch (error) {
                 console.error("Giriş başarısız", error.response?.data || error.message);
